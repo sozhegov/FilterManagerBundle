@@ -76,6 +76,56 @@ class FilterManager implements FilterManagerInterface
     /**
      * {@inheritdoc}
      */
+    public function handleCountRequest(Request $request)
+    {
+        return $this->count($this->container->buildSearchRequest($request));
+    }
+
+    /**
+     * Executes search.
+     *
+     * @param SearchRequest $request
+     *
+     * @return int
+     */
+    public function count(SearchRequest $request)
+    {
+        $this->eventDispatcher->dispatch(new PreSearchEvent($request),ONGRFilterManagerEvents::PRE_SEARCH);
+
+        $search = $this->container->buildSearch($request);
+
+        /** @var FilterInterface $filter */
+        foreach ($this->container->all() as $name => $filter) {
+            $relatedSearch = new Search();
+
+            if ($filter->isRelated()) {
+                // We simply exclude not related filters and current filter itself.
+                $relatedFilters = $this->container->getFiltersByRelation(
+                    new AndRelation([$filter->getSearchRelation(), new ExcludeRelation([$name])])
+                );
+                $relatedSearch = $this->container->buildSearch($request, $relatedFilters);
+            }
+
+            $this->eventDispatcher->dispatch(
+                new PreProcessSearchEvent($request->get($name), $relatedSearch),
+                ONGRFilterManagerEvents::PRE_PROCESS_SEARCH
+            );
+
+            $filter->preProcessSearch(
+                $search,
+                $relatedSearch,
+                $request->get($name)
+            );
+        }
+
+        $count = $this->repository->countDocuments($search);
+
+        return $count;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function handleRequest(Request $request)
     {
         return $this->search($this->container->buildSearchRequest($request));

@@ -26,4 +26,13 @@ interface FilterManagerInterface
      * @return SearchResponse
      */
     public function handleRequest(Request $request);
+
+    /**
+     * Handles count request.
+     *
+     * @param Request $request
+     *
+     * @return SearchResponse
+     */
+    public function handleCountRequest(Request $request);
 }
