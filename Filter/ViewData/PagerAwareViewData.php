@@ -173,35 +173,23 @@ class PagerAwareViewData extends ViewData
      */
     public function getPages()
     {
-        $numAdjacents = (int) floor(($this->maxPages - 3) / 2);
+        $numAdjacents = (int) floor($this->maxPages / 2) - 1;
 
         if ($this->currentPage + $numAdjacents > $this->numPages) {
             $begin = $this->numPages - $this->maxPages + 2;
-        } else {
+        }
+        else {
             $begin = $this->currentPage - $numAdjacents;
         }
-        if ($begin < 2) {
-            $begin = 2;
+        if ($begin < 1) {
+            $begin = 1;
         }
 
         $end = $begin + $this->maxPages - 2;
-//        if ($end >= $this->numPages) $end = $this->numPages - 1;
 
-//        $tmpBegin = $this->maxPages - floor($this->maxPages / 2);
-//        $tmpEnd = $tmpBegin + $this->maxPages - 1;
-//
-//        if ($tmpBegin < 1) {
-//            $tmpEnd += 1 - $tmpBegin;
-//            $tmpBegin = 1;
-//        }
-//
-//        if ($tmpEnd > $this->getLastPage()) {
-//            $tmpBegin -= $tmpEnd - $this->getLastPage();
-//            $tmpEnd = $this->getLastPage();
-//        }
-//
-//        $begin = min($tmpBegin, 2);
-//        $end = $tmpEnd;
+        if ($end > $this->numPages) {
+            $end = $this->numPages;
+        }
 
         return range($begin, $end, 1);
     }
