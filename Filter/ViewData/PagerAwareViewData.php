@@ -184,13 +184,24 @@ class PagerAwareViewData extends ViewData
         if ($begin < 1) {
             $begin = 1;
         }
-
-        $end = $begin + $this->maxPages - 2;
+        $addEnd = $begin === 1 ? 1 : 0;
+        $end = $begin + $this->maxPages - 3 + $addEnd;
 
         if ($end > $this->numPages) {
             $end = $this->numPages;
         }
+        if ($end === $this->numPages && $begin > 1) {
+            $begin--;
+        }
 
-        return range($begin, $end, 1);
+        $pages = range($begin, $end, 1);
+        if ($begin > 1) {
+            $pages = array_merge([1], $pages);
+        }
+        if ($this->numPages > $end) {
+            $pages[] = $this->numPages;
+        }
+
+        return $pages;
     }
 }
