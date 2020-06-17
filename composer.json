@@ -13,7 +13,7 @@
     "require": {
         "php": "^7.0",
         "sozhegov/elasticsearch-bundle": "~6.1|~7.0",
-        "jms/serializer-bundle": "^2.4",
+        "jms/serializer-bundle": "^2.4|^3.0",
         "symfony/twig-bundle": "^3.4|^4.0",
         "symfony/translation": "^3.4|^4.0",
         "symfony/asset": "^3.4|^4.0",
