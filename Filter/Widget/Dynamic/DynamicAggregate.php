@@ -169,7 +169,8 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
                 $name = $nameAggregation['key'];
 
                 if (($name != $activeName && $activeName != 'all-selected') ||
-                    ($activeName == 'all-selected' && in_array($name, $activeNames))) {
+                    ($activeName == 'all-selected' && in_array($name, $activeNames))
+                ) {
                     continue;
                 }
 
@@ -178,7 +179,9 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
                     $unsortedChoices[$name][$bucket['key']] = $choice;
                 }
 
-                $this->addViewDataItem($data, $name, $unsortedChoices[$name]);
+                if (!empty($unsortedChoices[$name])) {
+                    $this->addViewDataItem($data, $name, $unsortedChoices[$name]);
+                }
                 unset($unsortedChoices[$name]);
             }
         }
@@ -368,8 +371,8 @@ class DynamicAggregate extends AbstractFilter implements ViewDataFactoryInterfac
     }
 
     /**
-     * @param AggregateViewData $data
-     * @param string            $name
+     * @param AggregateViewData              $data
+     * @param string                         $name
      * @param ViewData\ChoiceAwareViewData[] $choices
      */
     protected function addViewDataItem($data, $name, $choices)
